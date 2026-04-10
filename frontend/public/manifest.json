@@ -1,0 +1,16 @@
+{
+  "name": "Smart Venue Experience",
+  "short_name": "SmartVenue",
+  "description": "Real-time venue navigation, queue management, and crowd analytics",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1d4ed8",
+  "theme_color": "#1d4ed8",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
