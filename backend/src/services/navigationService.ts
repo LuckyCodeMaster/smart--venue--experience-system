@@ -2,6 +2,7 @@ import db from '../config/database';
 import { NavigationZone, NavigationRoute } from '../types';
 import { CacheService } from './cacheService';
 import { WebSocketService } from './websocketService';
+import logger from '../utils/logger';
 
 const ZONES_TABLE = 'navigation_zones';
 const ROUTES_TABLE = 'navigation_routes';
@@ -128,6 +129,8 @@ export const NavigationService = {
       event_type: 'congestion_reported',
       event_data: { zone_id: zoneId, level, notes },
       created_at: new Date(),
-    }).catch(() => {/* best-effort analytics */});
+    }).catch((err: unknown) => {
+      logger.warn('Analytics event insert failed (best-effort):', err);
+    });
   },
 };

@@ -62,7 +62,7 @@ export const joinQueueSchema = Joi.object({
 export const sensorIngestSchema = Joi.object({
   value: Joi.number().required(),
   unit: Joi.string().trim().max(50).required(),
-  recorded_at: Joi.date().iso().max('now').default(() => new Date()),
+  recorded_at: Joi.date().iso().max(new Date()).default(() => new Date()),
   metadata: Joi.object().default({}),
 });
 
