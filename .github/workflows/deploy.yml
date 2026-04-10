@@ -1,0 +1,167 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  BACKEND_IMAGE: ${{ github.repository_owner }}/sves-backend
+  FRONTEND_IMAGE: ${{ github.repository_owner }}/sves-frontend
+
+jobs:
+  # ---------------------------------------------------------------------------
+  build-and-push-backend:
+  # ---------------------------------------------------------------------------
+    name: Build & Push Backend Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image-digest: ${{ steps.push.outputs.digest }}
+      image-tag: ${{ steps.meta.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata (backend)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}
+          tags: |
+            type=sha,prefix=sha-
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push backend image
+        id: push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          target: production
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+
+  # ---------------------------------------------------------------------------
+  build-and-push-frontend:
+  # ---------------------------------------------------------------------------
+    name: Build & Push Frontend Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image-digest: ${{ steps.push.outputs.digest }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata (frontend)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}
+          tags: |
+            type=sha,prefix=sha-
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push frontend image
+        id: push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          target: production
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VITE_API_URL=${{ secrets.VITE_API_URL }}
+            VITE_WS_URL=${{ secrets.VITE_WS_URL }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+
+  # ---------------------------------------------------------------------------
+  deploy:
+  # ---------------------------------------------------------------------------
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-and-push-backend, build-and-push-frontend]
+    environment:
+      name: production
+      url: ${{ secrets.PRODUCTION_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # -----------------------------------------------------------------------
+      # PLACEHOLDER: Replace the steps below with your actual deployment method
+      # Options include:
+      #   - SSH into server and run `docker compose pull && docker compose up -d`
+      #   - kubectl apply with updated image tags
+      #   - AWS ECS / GCP Cloud Run / Azure Container Apps update
+      #   - Render / Railway / Fly.io deployment trigger
+      # -----------------------------------------------------------------------
+
+      - name: Deployment summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | Tag |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend | \`ghcr.io/${{ env.BACKEND_IMAGE }}:sha-${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend | \`ghcr.io/${{ env.FRONTEND_IMAGE }}:sha-${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Commit: \`${{ github.sha }}\` by @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Trigger deployment
+        # Replace this with your actual deployment command, e.g.:
+        #   uses: appleboy/ssh-action@v1
+        # or a webhook, or kubectl set image, etc.
+        run: |
+          echo "Deployment triggered for commit ${{ github.sha }}"
+          echo "Backend image: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:sha-${{ github.sha }}"
+          echo "Frontend image: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:sha-${{ github.sha }}"
+          # TODO: Add actual deployment steps
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::Deployment failed for commit ${{ github.sha }}"
+          # Add Slack/Teams/email notification here if desired
