@@ -10,6 +10,14 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server, path: '/ws' });
 
 // Middleware
+if (process.env.NODE_ENV === 'production' && !process.env.ALLOWED_ORIGINS) {
+  console.warn(
+    '[WARN] ALLOWED_ORIGINS is not set. In production, set this to your frontend URL ' +
+    '(e.g. https://your-app.vercel.app) to avoid CORS errors. ' +
+    'Falling back to default origins.'
+  );
+}
+
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
   : [
