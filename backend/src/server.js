@@ -10,6 +10,10 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server, path: '/ws' });
 
 // Middleware
+// Environment configuration:
+//   ALLOWED_ORIGINS — comma-separated list of allowed CORS origins
+//                     (required in production; see .env.example at project root)
+//   NODE_ENV        — set to "production" to enforce strict CORS checks
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
   : [
@@ -194,6 +198,7 @@ app.post('/api/queue/leave', (req, res) => {
 
 // ── Start server ───────────────────────────────────────────────────────────────
 
+// PORT — port to listen on (default 5000; set via environment variable)
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`SVES Backend running on port ${PORT}`);
