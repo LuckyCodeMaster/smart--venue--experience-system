@@ -10,6 +10,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=5000
+      - ALLOWED_ORIGINS=http://localhost:3000
     restart: unless-stopped
 
   frontend:
