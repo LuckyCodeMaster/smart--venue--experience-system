@@ -46,7 +46,7 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          REACT_APP_BACKEND_URL: https://sves-backend.onrender.com
+          REACT_APP_BACKEND_URL: ${{ vars.REACT_APP_BACKEND_URL || 'https://sves-backend.onrender.com' }}
           CI: false
 
   deploy-frontend:

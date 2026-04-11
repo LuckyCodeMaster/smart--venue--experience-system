@@ -10,6 +10,9 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server, path: '/ws' });
 
 // Middleware
+// ALLOWED_ORIGINS: comma-separated list of allowed frontend origins.
+// In production, set this env var (e.g. "https://sves-demo.vercel.app").
+// Omitting it in development falls back to localhost + the Vercel demo URL.
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
   : [
@@ -193,6 +196,8 @@ app.post('/api/queue/leave', (req, res) => {
 });
 
 // ── Start server ───────────────────────────────────────────────────────────────
+// PORT: defaults to 5000. Set via environment variable in production.
+// Example: PORT=8080 node src/server.js
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
