@@ -1,13 +1,18 @@
 services:
+  # Backend API — deployed to Render (render.yaml manages this service)
   - type: web
     name: sves-backend
     runtime: node
     rootDir: backend
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: ALLOWED_ORIGINS
-        sync: false
+        sync: false   # Set in Render dashboard: your Vercel frontend URL
+
+# Frontend — deployed separately to Vercel (see frontend/vercel.json)
+# Configure REACT_APP_BACKEND_URL in the Vercel dashboard to point to
+# the Render backend URL (e.g. https://sves-backend.onrender.com).
