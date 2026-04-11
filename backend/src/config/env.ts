@@ -16,7 +16,7 @@ const optional = (key: string, defaultValue: string): string =>
 
 export const env = {
   NODE_ENV: optional('NODE_ENV', 'development'),
-  PORT: parseInt(optional('PORT', '3000'), 10),
+  PORT: parseInt(optional('PORT', '5000'), 10),
 
   DATABASE_URL: process.env['DATABASE_URL'],
   DB_HOST: optional('DB_HOST', 'localhost'),
@@ -41,7 +41,7 @@ export const env = {
   RATE_LIMIT_WINDOW_MS: parseInt(optional('RATE_LIMIT_WINDOW_MS', '900000'), 10),
   RATE_LIMIT_MAX: parseInt(optional('RATE_LIMIT_MAX', '100'), 10),
 
-  CORS_ORIGINS: optional('CORS_ORIGINS', 'http://localhost:3001,http://localhost:5173').split(','),
+  CORS_ORIGINS: optional('CORS_ORIGINS', 'http://localhost:3000').split(','),
 
   LOG_LEVEL: optional('LOG_LEVEL', 'info'),
   LOG_DIR: optional('LOG_DIR', 'logs'),

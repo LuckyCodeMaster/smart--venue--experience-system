@@ -10,8 +10,8 @@ RUN npm install --frozen-lockfile
 # Copy source and build
 COPY . .
 
-ARG REACT_APP_API_URL=http://localhost:3000/api/v1
-ARG REACT_APP_WS_URL=http://localhost:3000
+ARG REACT_APP_API_URL=http://localhost:5000/api/v1
+ARG REACT_APP_WS_URL=http://localhost:5000
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
 ENV REACT_APP_WS_URL=$REACT_APP_WS_URL
 
