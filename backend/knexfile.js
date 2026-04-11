@@ -44,9 +44,12 @@ module.exports = {
     ...base,
     connection: {
       connectionString: process.env.DATABASE_URL,
-      // Set PG_SSL_REJECT_UNAUTHORIZED=false only if using self-signed certs.
-      // Defaults to true (certificate verification enabled).
-      ssl: { rejectUnauthorized: process.env.PG_SSL_REJECT_UNAUTHORIZED !== 'false' },
+      // Enable SSL only when PG_SSL=true.
+      // Set PG_SSL_REJECT_UNAUTHORIZED=false only if using self-signed certs;
+      // defaults to true (certificate verification enabled).
+      ssl: process.env.PG_SSL === 'true'
+        ? { rejectUnauthorized: process.env.PG_SSL_REJECT_UNAUTHORIZED !== 'false' }
+        : false,
     },
     migrations: {
       // Migrations are pre-compiled to JS during the Docker build

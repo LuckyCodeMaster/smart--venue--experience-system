@@ -26,7 +26,9 @@ const getKnexConfig = (): Knex.Config => {
       ...baseConfig,
       connection: {
         connectionString: env.DATABASE_URL,
-        ssl: env.isProduction()
+        // Enable SSL only when PG_SSL=true.
+        // Set PG_SSL_REJECT_UNAUTHORIZED=false only if using self-signed certs.
+        ssl: (env.isProduction() && process.env['PG_SSL'] === 'true')
           ? { rejectUnauthorized: process.env['PG_SSL_REJECT_UNAUTHORIZED'] !== 'false' }
           : false,
       },

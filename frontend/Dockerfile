@@ -29,7 +29,8 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Example values:
 #   https://api.example.com wss://api.example.com   (production)
 #   http://localhost:5000 ws://localhost:5000         (local dev)
-ARG BACKEND_ORIGIN=https: wss:
+# Default is localhost-scoped for safety; production builds must pass this arg explicitly.
+ARG BACKEND_ORIGIN=http://localhost:5000 ws://localhost:5000
 ENV BACKEND_ORIGIN=${BACKEND_ORIGIN}
 
 # Copy nginx template and substitute the BACKEND_ORIGIN placeholder
