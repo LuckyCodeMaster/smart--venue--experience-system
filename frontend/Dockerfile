@@ -25,8 +25,19 @@ FROM nginx:1.25-alpine AS production
 # Remove default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Accept the backend origin so it can be baked into the CSP header.
+# Example values:
+#   https://api.example.com wss://api.example.com   (production)
+#   http://localhost:5000 ws://localhost:5000         (local dev)
+ARG BACKEND_ORIGIN=https: wss:
+ENV BACKEND_ORIGIN=${BACKEND_ORIGIN}
+
+# Copy nginx template and substitute the BACKEND_ORIGIN placeholder
+COPY nginx.conf.template /etc/nginx/conf.d/default.conf.template
+RUN envsubst '${BACKEND_ORIGIN}' \
+    < /etc/nginx/conf.d/default.conf.template \
+    > /etc/nginx/conf.d/default.conf && \
+    rm /etc/nginx/conf.d/default.conf.template
 
 # Copy the React build output
 COPY --from=builder /app/build /usr/share/nginx/html

@@ -114,6 +114,7 @@ jobs:
           build-args: |
             REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}
             REACT_APP_WS_URL=${{ secrets.REACT_APP_WS_URL }}
+            BACKEND_ORIGIN=${{ secrets.BACKEND_ORIGIN }}
             BUILD_DATE=${{ github.event.head_commit.timestamp }}
             VCS_REF=${{ github.sha }}
 
