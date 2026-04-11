@@ -112,8 +112,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            VITE_API_URL=${{ secrets.VITE_API_URL }}
-            VITE_WS_URL=${{ secrets.VITE_WS_URL }}
+            REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}
+            REACT_APP_WS_URL=${{ secrets.REACT_APP_WS_URL }}
             BUILD_DATE=${{ github.event.head_commit.timestamp }}
             VCS_REF=${{ github.sha }}
 
@@ -137,6 +137,25 @@ jobs:
       #   - kubectl apply with updated image tags
       #   - AWS ECS / GCP Cloud Run / Azure Container Apps update
       #   - Render / Railway / Fly.io deployment trigger
+      # -----------------------------------------------------------------------
+
+      # -----------------------------------------------------------------------
+      # DATABASE MIGRATIONS
+      # Run migrations BEFORE routing traffic to the new containers.
+      # Example using SSH (replace with your actual server details):
+      #
+      # - name: Run database migrations
+      #   uses: appleboy/ssh-action@v1
+      #   with:
+      #     host: ${{ secrets.DEPLOY_HOST }}
+      #     username: ${{ secrets.DEPLOY_USER }}
+      #     key: ${{ secrets.DEPLOY_SSH_KEY }}
+      #     script: |
+      #       docker run --rm \
+      #         -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+      #         -e NODE_ENV=production \
+      #         ghcr.io/${{ env.BACKEND_IMAGE }}:sha-${{ github.sha }} \
+      #         npm run migrate:prod
       # -----------------------------------------------------------------------
 
       - name: Deployment summary

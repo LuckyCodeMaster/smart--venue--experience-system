@@ -110,7 +110,7 @@ jobs:
 
       - name: Run database migrations
         working-directory: backend
-        run: npm run migrate || true
+        run: npm run migrate
 
       - name: Run backend tests
         working-directory: backend
@@ -222,7 +222,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: frontend/dist/
+          path: frontend/build/
           retention-days: 7
 
       - name: Build Docker image (dry run)

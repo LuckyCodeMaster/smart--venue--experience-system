@@ -11,8 +11,9 @@ const getKnexConfig = (): Knex.Config => {
       idleTimeoutMillis: 600000,
     },
     migrations: {
-      directory: './migrations',
-      extension: 'ts',
+      // In production, migrations are pre-compiled to JS by the Dockerfile
+      directory: env.isProduction() ? './dist/migrations' : './migrations',
+      extension: env.isProduction() ? 'js' : 'ts',
       tableName: 'knex_migrations',
     },
     seeds: {

@@ -6,10 +6,14 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-COPY tsconfig.json ./
+COPY tsconfig.json tsconfig.migrations.json ./
 COPY src ./src
+COPY migrations ./migrations
 
+# Compile application source
 RUN npm run build
+# Compile migrations to JS so they can run in production without ts-node
+RUN npx tsc -p tsconfig.migrations.json
 
 # Production stage
 FROM node:20-alpine AS production
@@ -26,7 +30,8 @@ COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=builder /app/dist ./dist
-COPY migrations ./migrations
+COPY knexfile.js ./
+COPY scripts ./scripts
 
 RUN chown -R sves:nodejs /app
 USER sves

@@ -1,0 +1,17 @@
+# Production overrides for docker-compose.yml
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# This file overrides settings that are only appropriate for local development:
+#   - Removes host source-code volume mounts (images are self-contained)
+#   - Runs the compiled server instead of ts-node-dev
+#   - Runs database migrations before starting
+
+version: '3.9'
+
+services:
+  backend:
+    volumes: []
+    command: sh -c "npm run migrate:prod && node dist/server.js"
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}

@@ -19,11 +19,12 @@ export const env = {
   PORT: parseInt(optional('PORT', '5000'), 10),
 
   DATABASE_URL: process.env['DATABASE_URL'],
-  DB_HOST: optional('DB_HOST', 'localhost'),
-  DB_PORT: parseInt(optional('DB_PORT', '5432'), 10),
-  DB_NAME: optional('DB_NAME', 'sves_db'),
-  DB_USER: optional('DB_USER', 'postgres'),
-  DB_PASSWORD: optional('DB_PASSWORD', ''),
+  // Accept PG_* (docker-compose convention) with DB_* as fallback
+  DB_HOST: process.env['PG_HOST'] ?? process.env['DB_HOST'] ?? 'localhost',
+  DB_PORT: parseInt(process.env['PG_PORT'] ?? process.env['DB_PORT'] ?? '5432', 10),
+  DB_NAME: process.env['PG_DATABASE'] ?? process.env['DB_NAME'] ?? 'sves_db',
+  DB_USER: process.env['PG_USER'] ?? process.env['DB_USER'] ?? 'postgres',
+  DB_PASSWORD: process.env['PG_PASSWORD'] ?? process.env['DB_PASSWORD'] ?? '',
   DB_POOL_MIN: parseInt(optional('DB_POOL_MIN', '2'), 10),
   DB_POOL_MAX: parseInt(optional('DB_POOL_MAX', '10'), 10),
 

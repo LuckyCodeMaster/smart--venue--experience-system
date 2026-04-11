@@ -3,8 +3,13 @@ import { env } from './env';
 import logger from '../utils/logger';
 
 const createRedisClient = (): Redis => {
+  // If the URL already contains credentials (redis://:pass@host), do not pass
+  // the password option separately – ioredis would override the URL password
+  // with the option value, potentially causing authentication failures.
+  const urlHasPassword = /redis:\/\/:[^@]+@/.test(env.REDIS_URL);
+
   const client = new Redis(env.REDIS_URL, {
-    password: env.REDIS_PASSWORD,
+    ...(urlHasPassword ? {} : { password: env.REDIS_PASSWORD }),
     db: env.REDIS_DB,
     maxRetriesPerRequest: 3,
     enableReadyCheck: true,

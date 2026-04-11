@@ -63,7 +63,7 @@ services:
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change_me_in_production_refresh_secret_min_32_chars}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
       JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
       LOG_LEVEL: ${LOG_LEVEL:-debug}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
       SENSOR_API_KEY_HASH: ${SENSOR_API_KEY_HASH:-}
@@ -85,16 +85,13 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:5000/api/v1}
+        REACT_APP_WS_URL: ${REACT_APP_WS_URL:-http://localhost:5000}
     container_name: sves_frontend
     restart: unless-stopped
-    environment:
-      VITE_API_URL: ${VITE_API_URL:-http://localhost:5000/api}
-      VITE_WS_URL: ${VITE_WS_URL:-ws://localhost:5000}
     ports:
       - '3000:80'
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     depends_on:
       - backend
     networks:

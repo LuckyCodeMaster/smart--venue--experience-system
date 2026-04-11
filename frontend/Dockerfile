@@ -4,8 +4,8 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Install dependencies first (layer caching)
-COPY package.json ./
-RUN npm install --frozen-lockfile
+COPY package*.json ./
+RUN npm ci
 
 # Copy source and build
 COPY . .
@@ -14,6 +14,8 @@ ARG REACT_APP_API_URL=http://localhost:5000/api/v1
 ARG REACT_APP_WS_URL=http://localhost:5000
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
 ENV REACT_APP_WS_URL=$REACT_APP_WS_URL
+# Prevent react-scripts from treating warnings as build errors
+ENV CI=false
 
 RUN npm run build
 
