@@ -11,8 +11,9 @@ const getKnexConfig = (): Knex.Config => {
       idleTimeoutMillis: 600000,
     },
     migrations: {
-      directory: './migrations',
-      extension: 'ts',
+      // In production, migrations are pre-compiled to JS by the Dockerfile
+      directory: env.isProduction() ? './dist/migrations' : './migrations',
+      extension: env.isProduction() ? 'js' : 'ts',
       tableName: 'knex_migrations',
     },
     seeds: {
@@ -25,7 +26,11 @@ const getKnexConfig = (): Knex.Config => {
       ...baseConfig,
       connection: {
         connectionString: env.DATABASE_URL,
-        ssl: env.isProduction() ? { rejectUnauthorized: false } : false,
+        // Enable SSL only when PG_SSL=true.
+        // Set PG_SSL_REJECT_UNAUTHORIZED=false only if using self-signed certs.
+        ssl: (env.isProduction() && process.env['PG_SSL'] === 'true')
+          ? { rejectUnauthorized: process.env['PG_SSL_REJECT_UNAUTHORIZED'] !== 'false' }
+          : false,
       },
     };
   }

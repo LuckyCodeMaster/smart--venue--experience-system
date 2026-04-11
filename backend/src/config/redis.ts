@@ -3,8 +3,18 @@ import { env } from './env';
 import logger from '../utils/logger';
 
 const createRedisClient = (): Redis => {
+  // Use the URL API to check whether the Redis URL includes a password,
+  // rather than a string search that could produce false positives.
+  const urlHasPassword = (() => {
+    try {
+      return !!new URL(env.REDIS_URL).password;
+    } catch {
+      return false;
+    }
+  })();
+
   const client = new Redis(env.REDIS_URL, {
-    password: env.REDIS_PASSWORD,
+    ...(urlHasPassword ? {} : { password: env.REDIS_PASSWORD }),
     db: env.REDIS_DB,
     maxRetriesPerRequest: 3,
     enableReadyCheck: true,
