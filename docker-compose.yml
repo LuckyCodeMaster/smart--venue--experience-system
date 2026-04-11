@@ -6,11 +6,11 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - '5000:5000'
+      - '${PORT:-5000}:5000'
     environment:
-      - NODE_ENV=production
-      - PORT=5000
-      - ALLOWED_ORIGINS=http://localhost:3000
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=${PORT:-5000}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000}
     restart: unless-stopped
 
   frontend:
@@ -18,7 +18,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - REACT_APP_BACKEND_URL=http://localhost:5000
+        - REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL:-http://localhost:5000}
     ports:
       - '3000:80'
     depends_on:

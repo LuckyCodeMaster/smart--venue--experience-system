@@ -3,7 +3,7 @@ services:
     name: sves-backend
     runtime: node
     rootDir: backend
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /health
     envVars:
@@ -11,3 +11,9 @@ services:
         value: production
       - key: ALLOWED_ORIGINS
         sync: false
+
+# Note: Frontend is deployed separately via Vercel.
+# Connect the GitHub repo to Vercel at https://vercel.com and it will
+# auto-deploy on every push to main using the settings in frontend/vercel.json.
+# Set REACT_APP_BACKEND_URL in the Vercel project environment variables
+# to point to the Render backend URL (e.g. https://sves-backend.onrender.com).
