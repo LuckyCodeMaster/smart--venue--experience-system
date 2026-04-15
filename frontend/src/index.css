@@ -2,24 +2,133 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @layer base {
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
+    background-color: #0a0a1a;
+    color: #f8fafc;
   }
 }
 
 @layer components {
+  /* Glass card */
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-4;
+    @apply relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-4;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
   }
+  .card:hover {
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12);
+    transform: translateY(-1px);
+  }
+
+  /* Solid card variant */
+  .card-solid {
+    @apply relative rounded-2xl p-4;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  /* Primary button */
   .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition-all duration-200 active:scale-95;
+    @apply relative inline-flex items-center justify-center gap-2 font-semibold py-2.5 px-5 rounded-xl text-sm transition-all duration-200 active:scale-95 overflow-hidden;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: white;
+    box-shadow: 0 4px 16px rgba(124,58,237,0.4);
   }
+  .btn-primary:hover {
+    box-shadow: 0 8px 24px rgba(124,58,237,0.6);
+    transform: translateY(-1px);
+  }
+  .btn-primary:disabled {
+    @apply opacity-40 cursor-not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Secondary button */
   .btn-secondary {
-    @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-xl transition-all duration-200 active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 font-semibold py-2.5 px-5 rounded-xl text-sm transition-all duration-200 active:scale-95 border border-white/20 bg-white/10 text-white backdrop-blur-sm;
   }
+  .btn-secondary:hover {
+    @apply bg-white/20;
+  }
+
+  /* Badge */
   .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-cyan {
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Progress bar base */
+  .progress-track {
+    @apply h-2 rounded-full overflow-hidden;
+    background: rgba(255,255,255,0.1);
+  }
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-700;
+  }
+
+  /* Glow dot (live indicator) */
+  .live-dot {
+    @apply relative w-2.5 h-2.5 rounded-full bg-emerald-400;
+  }
+  .live-dot::after {
+    content: '';
+    @apply absolute inset-0 rounded-full bg-emerald-400 animate-ping;
+  }
+
+  /* Stat value */
+  .stat-value {
+    @apply text-3xl font-black tracking-tight;
+    line-height: 1;
+  }
+
+  /* Shimmer effect for loading/highlight */
+  .shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
   }
 }
+
+@layer utilities {
+  /* Background animated mesh */
+  .bg-venue {
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(124,58,237,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(6,182,212,0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(236,72,153,0.05) 0%, transparent 70%),
+      linear-gradient(180deg, #0a0a1a 0%, #0d0d24 100%);
+  }
+
+  /* Glassmorphism layers */
+  .glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .glass-strong {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+}
+
