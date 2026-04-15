@@ -163,13 +163,15 @@ smart--venue--experience-system/
 │   ├── src/
 │   │   ├── App.js           # Main app with all views
 │   │   └── index.css        # Tailwind styles
-│   ├── vercel.json          # Vercel deployment config
+│   ├── vercel.json          # Vercel config (frontend-level)
 │   └── Dockerfile           # Container config
 ├── backend/                  # Express API (deployed to Render)
 │   ├── src/
 │   │   └── server.js        # All-in-one API server
 │   ├── Procfile             # Heroku/Railway deployment
 │   └── Dockerfile           # Container config
+├── vercel.json              # Root-level Vercel config (monorepo)
+├── DEPLOYMENT.md            # Step-by-step deployment guide
 ├── docker-compose.yml        # Local full-stack setup
 ├── render.yaml              # Render deployment config
 └── .github/
@@ -181,17 +183,16 @@ smart--venue--experience-system/
 
 ## 🌐 Deployment
 
-### Frontend → Vercel
-1. Go to [vercel.com](https://vercel.com) and connect GitHub
-2. Import this repository, set **Root Directory** to `frontend`
-3. Add environment variable: `REACT_APP_BACKEND_URL=https://your-backend.onrender.com`
-4. Deploy! Auto-deploys on every push to main.
+For a detailed, step-by-step deployment walkthrough see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 
-### Backend → Render
-1. Go to [render.com](https://render.com) and connect GitHub
-2. Create a new **Web Service**, set **Root Directory** to `backend`
-3. Build command: `npm install` | Start command: `npm start`
-4. Deploy! Auto-deploys on every push to main.
+### Quick summary
+
+| Service | Platform | Key setting |
+|---------|----------|-------------|
+| Frontend | [Vercel](https://vercel.com) | Deploy from repo root — `vercel.json` points Vercel at `./frontend` automatically |
+| Backend | [Render](https://render.com) | Root Directory → `backend` |
+
+**Required environment variable (Vercel):** `REACT_APP_BACKEND_URL=https://your-backend.onrender.com`
 
 ---
 
