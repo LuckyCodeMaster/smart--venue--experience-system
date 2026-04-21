@@ -261,9 +261,12 @@ For a detailed, step-by-step deployment walkthrough see **[DEPLOYMENT.md](DEPLOY
 | `/api/venue` | GET | Venue info & section data |
 | `/api/queues` | GET | All queue statuses |
 | `/api/analytics` | GET | Analytics & statistics |
+| `/api/design/tokens` | GET | Design system tokens + sync payloads |
+| `/api/design/theme` | GET | Active dark glassmorphism theme config |
+| `/api/design/theme/preview` | POST | Preview theme payload for integrations |
 | `/api/queue/join` | POST | Join a queue |
 | `/api/queue/leave` | POST | Leave a queue |
-| `/ws` | WebSocket | Real-time updates |
+| `/ws` | WebSocket | Real-time updates (`INIT`, `UPDATE`, `THEME_UPDATE`) |
 
 ---
 
